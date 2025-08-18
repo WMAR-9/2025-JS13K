@@ -29,7 +29,6 @@ class Action {
     }
     if (t==="keyup"){
         this.keyIn[k]=0;
-        this.keyUp[k]=1;
     }
     if (t==="mousedown"||t==="touchstart") this.keyIn.mouse={...this.pos(e),active:1};
     if (t==="mouseup"||t==="touchend") this.keyIn.mouse={...this.keyIn.mouse,active:0};

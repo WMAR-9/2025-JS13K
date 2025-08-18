@@ -10,7 +10,7 @@
     "test":"node ./src/js/main.js",
     "zip": "node ./tools/zip.js && bash ./tools/zip.sh",
     "deploy": "git add . && git commit -m \"New push \" && git push",
-    "page": "npm run build && git add dist && git commit -m \"New build\" && git push && git subtree push --prefix dist origin gh-pages"
+    "page": "git add -f black_cat/dist && git commit -m \"New build\" && git push && git subtree push --prefix=black_cat/dist/blackcat origin gh-pages"
   },
   "devDependencies": {
     "archiver": "^7.0.1",

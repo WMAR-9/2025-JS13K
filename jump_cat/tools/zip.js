@@ -1,7 +1,7 @@
 import fs from 'fs';
 import archiver from 'archiver';
 
-const zipPath = "./jumpcat/"
+const zipPath = "./dist/jumpcat/"
 const outputPath = "./zip/distJS.zip"
 
 const output = fs.createWriteStream(outputPath);

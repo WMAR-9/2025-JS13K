@@ -6,7 +6,7 @@ import { createHtmlPlugin } from 'vite-plugin-html'
 export default defineConfig({
   base: './',
   build: {
-    outDir: 'jumpcat',
+    outDir: './dist/jumpcat',
     minify: 'terser',
     assetsInlineLimit: 0,
     cssCodeSplit: true,
