@@ -1,7 +1,7 @@
-import { add, dot, substract } from "./basic"
+import { add, dot, resetXY, substract } from "./basic"
 
 class Vector{
-    constructor(pos,wh){
+    constructor(pos,wh=resetXY(0,0)){
       this.pos = pos
       this.wh = wh
     }

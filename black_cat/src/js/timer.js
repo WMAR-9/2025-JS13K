@@ -34,13 +34,13 @@ class Timer {
 
     start() {
         if (this.startTime < this.endTime) {
-            this.add();
-            return 0
+            this.add()
+            return;
         } else {
             if(this.loop){
-                this.reset();
+                this.reset()
             }
-            return 1
+            return;
         }
     }
     // animate

@@ -1,16 +1,16 @@
 {
-  "name": "zone13",
+  "name": "blackcat",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "rm -fr ./blackcat && vite build",
+    "build": "rm -fr ./dist && vite build",
     "preview": "vite preview",
     "test":"node ./src/js/main.js",
     "zip": "node ./tools/zip.js && bash ./tools/zip.sh",
-    "deploy": "git add .;git commit -m \"New push \"",
-    "page": "npm run build;git add blackcat;git commit -m \"New build\";git push;git subtree push --prefix blackcat origin gh-pages"
+    "deploy": "git add . && git commit -m \"New push \" && git push",
+    "page": "npm run build && git add dist && git commit -m \"New build\" && git push && git subtree push --prefix dist origin gh-pages"
   },
   "devDependencies": {
     "archiver": "^7.0.1",
