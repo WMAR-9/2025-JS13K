@@ -4,6 +4,7 @@ class Vector{
     constructor(pos,wh=resetXY(0,0)){
       this.pos = pos
       this.wh = wh
+      // console.log("this.pos",this.pos)
     }
     add(v){
       this.pos = add(this.pos,v)
@@ -14,8 +15,8 @@ class Vector{
       return this;
     }
     dot(a){
-      this.pos = dot(a)
-      return this
+      this.pos = dotdot(a)
+      return this;
     }
     clone(){
       return new Vector(this.pos,this.wh)

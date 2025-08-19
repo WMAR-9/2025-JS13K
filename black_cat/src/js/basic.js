@@ -12,7 +12,7 @@ const resetXY = (x,y)=>({x,y})
 const floor = a =>m.floor(a)
 const floorSet = a =>resetXY(floor(a.x),floor(a.y))
 const abs = a =>m.abs(a)
-const sign = a=>m.sing(a)
+const sign = a=>m.sign(a)
 
 const add = (a,b) =>resetXY(a.x+b.x,a.y+b.y)
 const dot=(a,b)=>resetXY(a.x*b,a.y*b)

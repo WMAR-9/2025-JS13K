@@ -23,7 +23,7 @@ class Action {
   handle(e) {
     e.preventDefault();
     let k = e.which||0, t = e.type;
-    console.log(k)
+    //console.log(k)
     if (t==="keydown"){
         this.keyIn[k]=1;
     }
