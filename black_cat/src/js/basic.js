@@ -1,3 +1,5 @@
+import { GameInit } from "./init";
+
 // For zip
 const m = Math
 const PI = m.PI
@@ -8,6 +10,9 @@ const rand=a=>m.random()*a
 const randInt=a=>rand(a)|0;
 const randIntBetween=(a,b)=>a+randInt(b-a+1);
 const resetXY = (x,y)=>({x,y})
+
+const isoX=(x,y)=>(x-y)*GameInit.tileW/2
+const isoY=(x,y)=>(x+y)*GameInit.tileW/4
 
 const floor = a =>m.floor(a)
 const floorSet = a =>resetXY(floor(a.x),floor(a.y))
@@ -49,5 +54,7 @@ export {
   substract,
   dot,
   comp,
-  resetXY
+  resetXY,
+  isoX,
+  isoY
 }

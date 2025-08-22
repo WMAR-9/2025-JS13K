@@ -1,13 +1,15 @@
 import { resetXY } from "./basic";
 import { Camera } from "./camera";
 import { canvas, ctx } from "./canvas";
+import { Cat } from "./Cat";
+import { GameInit } from "./init";
 import { Action, handleEnd,handleStart } from "./input";
 import { Timer } from "./timer";
 import { Vector } from "./vector";
 
 const action = new Action(canvas);
 
-const mapW = 10, mapH = 5;
+const mapW = 6, mapH = 6;
 const tileW = 160;
 
 function isoX(x,y) { return (x-y)*tileW/2; }
@@ -31,12 +33,13 @@ class Tile {
     this.y = y;
     this.num = num;
     this.type = type;
+    this.k = "w";
     this.hidden = hidden;
-    this.height = height
+    this.h = height
   }
   update(){return this}
-  draw(ctx) {
-    const h = this.height * 25
+  draw() {
+    const h = this.h * 25
     
     ctx.beginPath();
     ctx.fillStyle="#FFF"
@@ -83,7 +86,7 @@ class Tile {
     }
     ctx.font = "bold 20px sans-serif";
     ctx.fillStyle = "#fff";
-    ctx.fillText(this.num, isoX(this.x + 0.5, this.y + 0.5), isoY(this.x + 0.5, this.y + 0.5) - h + 10);
+    ctx.fillText(this.h, isoX(this.x + 0.5, this.y + 0.5), isoY(this.x + 0.5, this.y + 0.5) - h + 10);
   }
 }
 
@@ -92,17 +95,23 @@ class Player{
 
         this.x = x;
         this.y = y;
-        this.pos =  new Vector(resetXY(isoX(this.x+0.5,this.y+0.5),isoY(this.x+0.5,this.y+0.5)-20))
+        this.targetX = x;
+        this.targetY = y;
+        this.pos =  new Vector(isoX(this.x+0.5,this.y+0.5),isoY(this.x+0.5,this.y+0.5)-25)
         this.lastKeys = {};
+        this.moving = false
+        this.speed = 8;
     }
     update() {
-      const moves = {37: [-1,0], 38: [0,-1], 39: [1,0], 40: [0,1]};
+    const moves = { 37: [-1, 0], 38: [0, -1], 39: [1, 0], 40: [0, 1] };
+
+    // 如果沒在移動才接受新輸入
+    if (!this.moving) {
       for (let k in moves) {
         if (action.isDown(k) && !this.lastKeys[k]) {
           let nx = this.x + moves[k][0];
           let ny = this.y + moves[k][1];
 
-  
           if (nx < 0 || ny < 0 || nx >= mapW || ny >= mapH) continue;
 
           let nextTile = data.find(t => t instanceof Tile && t.x === nx && t.y === ny);
@@ -112,28 +121,38 @@ class Player{
           let dh = nextTile.height - curTile.height;
           if (Math.abs(dh) > 1) continue;
 
-          if (nextTile.type === TYPE.CURSE) continue; 
-
-          this.x = nx;
-          this.y = ny;
+          this.targetX = nx;
+          this.targetY = ny;
+          this.moving = true;
         }
       }
-      let curTile = data.find(t => t instanceof Tile && t.x === this.x && t.y === this.y);
-
-      let h = curTile ? curTile.height * 25 : 0;
-      this.pos = new Vector(
-        resetXY(
-          isoX(this.x + 0.5, this.y + 0.5),
-          isoY(this.x + 0.5, this.y + 0.5) - h - 25 
-        )
-      );
-      this.lastKeys = {...action.keyIn};
-      return this;
     }
-    draw(ctx){
+
+    let curTile = data.find(t => t instanceof Tile && t.x === this.targetX && t.y === this.targetY);
+    let h = curTile ? curTile.height * 25 : 0;
+    let targetPos = new Vector(
+        isoX(this.targetX + 0.5, this.targetY + 0.5),
+        isoY(this.targetX + 0.5, this.targetY + 0.5) - h - 25
+    );
+
+    this.pos.x += (targetPos.x - this.pos.x) / this.speed;
+    this.pos.y += (targetPos.y - this.pos.y) / this.speed;
+
+    if (Math.abs(targetPos.x - this.pos.x) < 1 &&
+        Math.abs(targetPos.y - this.pos.y) < 1) {
+      this.pos = targetPos.clone();
+      this.x = this.targetX;
+      this.y = this.targetY;
+      this.moving = false; 
+    }
+
+    this.lastKeys = { ...action.keyIn };
+    return this;
+  }
+    draw(){
         
         ctx.beginPath();
-        ctx.arc(this.pos.pos.x, this.pos.pos.y, 12, 0, Math.PI * 2);
+        ctx.arc(this.pos.x, this.pos.y, 12, 0, Math.PI * 2);
         ctx.fillStyle = "#ffe066";
         ctx.shadowColor = "#000";
         ctx.shadowBlur = 10;
@@ -184,6 +203,7 @@ function genNumMap() {
   arr[0][0]=0; arr[mapH-1][mapW-1]=0;
   return arr;
 }
+
 function genHeightMap() {
   let arr = [];
   for (let y = 0; y < mapH; y++) {
@@ -204,13 +224,16 @@ let data = []
 
 for(var i=0;i<typeMap.length;i++){
     for(var j=0;j<typeMap[i].length;j++){
-        data.push(new Tile(i,j,numMap[i][j],typeMap[i][j],0,heightMap[i][j]))
+        GameInit.item.push(new Tile(j,i,numMap[i][j],typeMap[i][j],0,heightMap[i][j]))
     }
 }
 
-const camera = new Camera(new Vector(resetXY(0,0)))
+const camera = new Camera(new Vector(0,0))
 
-data.push(new Player(0,0))
+GameInit.cats.push(new Cat(0,0,0,"y"))
+GameInit.cats.push(new Cat(0,1,0,"red"))
+// GameInit.item.push()
+// GameInit.item.push(new Cat(0,1,0,"C"))
 
 const initGame =async ()=>{
     console.log("Start")
@@ -233,23 +256,28 @@ const update=()=>{
 let last = performance.now();
 
 const draw=()=>{
-    
+    GameInit.cats.forEach(cat => cat.planMove(action));
+
+    GameInit.cats.forEach(cat => cat.applyMove());
+
+    GameInit.cats.forEach(cat => cat.update());
+
     camera.update(0.01)
-    data.map(e=>e.update())
-    camera.follow(data[data.length-1].pos.clone())
+    GameInit.item.map(e=>{
+      e.update()
+    })
+    GameInit.cats.map(e=>{
+      e.update()
+    })
+    camera.follow(GameInit.cats[GameInit.cats.length-1].pos.clone())
     ctx.save()
     camera.draw()
-    data.map(e=>e.draw(ctx))
+    GameInit.item.map(e=>e.draw())
+    GameInit.cats.map(e=>e.draw())
     ctx.restore()
 }
-
-let lastTime = Timer.prototype.curTime();
-
 const gameLoop = _=>{
     
-    let now = Timer.prototype.curTime();
-    let dt = (now - lastTime) / 1000;
-    lastTime = now
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
     draw()

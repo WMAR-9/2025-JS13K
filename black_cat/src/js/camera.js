@@ -4,32 +4,36 @@ import { Vector } from "./vector";
 
 class Camera {
   constructor(pos, zoom = 1, rotation = 0) {
-    this.pos = resetXY(pos.pos.x,pos.pos.y);
-    this.targetPos = { x: pos.pos.x, y: pos.pos.y };
+    this.pos = pos;
+    this.targetPos = pos.clone();
     this.zoom = zoom;
     this.zoomTarget = zoom;
     this.rotation = rotation;
     this.rotationTarget = rotation;
     this.boundary = resetXY(150/zoom, 80/zoom);
-
     this.smoothness = 0.01;
   }
 
   follow(pos) {
-    const dx = pos.pos.x - this.targetPos.x;
-    const dy = pos.pos.y - this.targetPos.y;
 
-    if (Math.abs(dx) > this.boundary.x) {
-      this.targetPos.x = pos.pos.x - this.boundary.x * Math.sign(dx);
+    const diffXY = pos.substract(this.targetPos)
+    
+    if (abs(diffXY.x) > this.boundary.x) {
+
+      this.targetPos = pos.substract(resetXY(this.boundary.x*sign(diffXY.x),0))
+
     }
-    if (Math.abs(dy) > this.boundary.y) {
-      this.targetPos.y = pos.pos.y - this.boundary.y * Math.sign(dy);
+    if (abs(diffXY.y) > this.boundary.y) {
+
+      this.targetPos = pos.substract(resetXY(0,this.boundary.y*sign(diffXY.y)))
+
     }
   }
 
   update() {
-    this.pos.x += (this.targetPos.x - this.pos.x) * this.smoothness;
-    this.pos.y += (this.targetPos.y - this.pos.y) * this.smoothness;
+    
+    this.pos.add(this.targetPos.clone().substract(this.pos).dot(this.smoothness))
+    
   }
 
   draw() {
