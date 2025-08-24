@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # === set var ===
-SOURCE_DIR="blackcat"
+SOURCE_DIR="./dist/blackcat"
 OUTPUT_FILE="./zip/blackcat.7z"
 LIMIT_KB=13
 

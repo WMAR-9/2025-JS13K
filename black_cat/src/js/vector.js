@@ -50,20 +50,18 @@ class Vector{
       this.y = isoY(this.x,this.y)
       this.x = x
     }
-    // equal(v){
-    //   return this.x==v.x&&this.y==v.y
-    // }
-    // inside(v){
-    //   return this.x<v.x&&this.y<v.y&&this.x>=0 && this.y>=0
-    // }
-    // zero(){
-    //   this.x=this.y=0;
-    // }
-    // dotwh(){
-    //   this.x*=this.w
-    //   this.y*=this.h
-    //   return this
-    // }
+    
+    toData() {
+      return {
+        __class: "Vector",
+        x: this.x,
+        y: this.y,
+        wh: this.wh 
+      }
+    }
+    static fromData(data) {
+      return new Vector(data.x, data.y, data.wh)
+    }
 
 }
 

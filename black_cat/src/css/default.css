@@ -2,7 +2,7 @@ html,body{
     height: 100%;
     display: grid;
     overflow: hidden;
-    background: #434343;
+    background: #000000;
 }
 #a{
     border-radius: 1px;
