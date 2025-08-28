@@ -21,7 +21,6 @@ class Tile extends Item {
         this.broken = 0;
 
         // block box
-        this.canMove=0
     }
     toData() {
         return {
@@ -51,8 +50,8 @@ class Tile extends Item {
     // zero tile 
     resetzero(){
         if(this.zeroBtn)return;
-        this.n = this.k==0 || (this.k>=16&&this.k<=20) ? 0:this.n;
-        this.zeroBtn = 1
+        if(this.k>=6&&this.k<=10)this.zeroBtn=1
+        this.n = 0
     }
     
     // default plus 1
@@ -105,54 +104,54 @@ class Tile extends Item {
     }
     draw() {
 
-        const h = this.h * 25
+        const h = this.h * 30
 
         if(this.k>=1 && this.k<=5 && !this.b){
             //this.drawHome()
         }
-        if(this.b==1){
-            ctx.save()
-            ctx.beginPath();
-            ctx.fillStyle="#FFF"
-            ctx.globalAlpha= 0.3
-            ctx.moveTo(isoX(this.x, this.y), isoY(this.x, this.y) - h-25);
-            ctx.lineTo(isoX(this.x + 1, this.y), isoY(this.x + 1, this.y) - h-25);
-            ctx.lineTo(isoX(this.x + 1, this.y + 1), isoY(this.x + 1, this.y + 1) - h-25);
-            ctx.lineTo(isoX(this.x, this.y + 1), isoY(this.x, this.y + 1) - h-25);
-            ctx.closePath();
-            // console.log(GameInit.theme.surfaceColor[this.k])
-            ctx.fillStyle = `#${GameInit.theme.surfaceColor[this.k-this.type]}`;
-            ctx.fill();
-            ctx.strokeStyle = "#fff";
-            ctx.lineWidth = 2;
-            ctx.stroke();
+        // if(this.b==1){
+        //     ctx.save()
+        //     ctx.beginPath();
+        //     ctx.fillStyle="#FFF"
+        //     ctx.globalAlpha= 0.3
+        //     ctx.moveTo(isoX(this.x, this.y), isoY(this.x, this.y) - h-25);
+        //     ctx.lineTo(isoX(this.x + 1, this.y), isoY(this.x + 1, this.y) - h-25);
+        //     ctx.lineTo(isoX(this.x + 1, this.y + 1), isoY(this.x + 1, this.y + 1) - h-25);
+        //     ctx.lineTo(isoX(this.x, this.y + 1), isoY(this.x, this.y + 1) - h-25);
+        //     ctx.closePath();
+        //     // console.log(GameInit.theme.surfaceColor[this.k])
+        //     ctx.fillStyle = `#${GameInit.theme.surfaceColor[this.k-this.type]}`;
+        //     ctx.fill();
+        //     ctx.strokeStyle = "#fff";
+        //     ctx.lineWidth = 2;
+        //     ctx.stroke();
 
-            ctx.beginPath();
-            ctx.moveTo(isoX(this.x, this.y + 1), isoY(this.x, this.y + 1) -h-25);
-            ctx.lineTo(isoX(this.x + 1, this.y+2), isoY(this.x + 1, this.y+2)-h-25);
-            ctx.lineTo(isoX(this.x + 2, this.y+2), isoY(this.x + 2, this.y+2)-h-25);
-            ctx.lineTo(isoX(this.x + 1, this.y+1), isoY(this.x + 1, this.y+1)-h-25);
-            ctx.fillStyle = "#014";
-            ctx.fill();
-            ctx.strokeStyle = "#fff";
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            ctx.closePath();
+        //     ctx.beginPath();
+        //     ctx.moveTo(isoX(this.x, this.y + 1), isoY(this.x, this.y + 1) -h-25);
+        //     ctx.lineTo(isoX(this.x + 1, this.y+2), isoY(this.x + 1, this.y+2)-h-25);
+        //     ctx.lineTo(isoX(this.x + 2, this.y+2), isoY(this.x + 2, this.y+2)-h-25);
+        //     ctx.lineTo(isoX(this.x + 1, this.y+1), isoY(this.x + 1, this.y+1)-h-25);
+        //     ctx.fillStyle = "#014";
+        //     ctx.fill();
+        //     ctx.strokeStyle = "#fff";
+        //     ctx.lineWidth = 2;
+        //     ctx.stroke();
+        //     ctx.closePath();
 
-            ctx.beginPath();
-            ctx.moveTo(isoX(this.x + 1, this.y+1), isoY(this.x + 1, this.y+1)-h-25);
-            ctx.lineTo(isoX(this.x + 2, this.y+2), isoY(this.x + 2, this.y+2)-h-25);
-            ctx.lineTo(isoX(this.x + 2, this.y+1), isoY(this.x + 2, this.y+1)-h-25);
-            ctx.lineTo(isoX(this.x + 1 , this.y), isoY(this.x + 1, this.y)-h-25);
-            ctx.closePath();
-            ctx.fillStyle = "#014"
-            ctx.fill();
-            ctx.strokeStyle = "#fff";
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            ctx.restore()
-            return;
-        }
+        //     ctx.beginPath();
+        //     ctx.moveTo(isoX(this.x + 1, this.y+1), isoY(this.x + 1, this.y+1)-h-25);
+        //     ctx.lineTo(isoX(this.x + 2, this.y+2), isoY(this.x + 2, this.y+2)-h-25);
+        //     ctx.lineTo(isoX(this.x + 2, this.y+1), isoY(this.x + 2, this.y+1)-h-25);
+        //     ctx.lineTo(isoX(this.x + 1 , this.y), isoY(this.x + 1, this.y)-h-25);
+        //     ctx.closePath();
+        //     ctx.fillStyle = "#014"
+        //     ctx.fill();
+        //     ctx.strokeStyle = "#fff";
+        //     ctx.lineWidth = 2;
+        //     ctx.stroke();
+        //     ctx.restore()
+        //     return;
+        // }
         ctx.beginPath();
         ctx.fillStyle="#FFF"
         ctx.moveTo(isoX(this.x, this.y), isoY(this.x, this.y) - h);
@@ -163,14 +162,14 @@ class Tile extends Item {
         // console.log(GameInit.theme.surfaceColor[this.k])
         ctx.fillStyle = `#${GameInit.theme.surfaceColor[this.k-this.type]}`;
         ctx.fill();
-        ctx.strokeStyle = "#fff";
+        ctx.strokeStyle = "#333";
         ctx.lineWidth = 2;
         ctx.stroke();
             
         ctx.beginPath();
         ctx.moveTo(isoX(this.x, this.y + 1), isoY(this.x, this.y + 1)-h);
-        ctx.lineTo(isoX(this.x + 1, this.y+2), isoY(this.x + 1, this.y+2));
-        ctx.lineTo(isoX(this.x + 2, this.y+2), isoY(this.x + 2, this.y+2));
+        ctx.lineTo(isoX(this.x + 1, this.y+2), isoY(this.x + 1, this.y+2)-h-40);
+        ctx.lineTo(isoX(this.x + 2, this.y+2), isoY(this.x + 2, this.y+2)-h-40);
         ctx.lineTo(isoX(this.x + 1, this.y+1), isoY(this.x + 1, this.y+1)-h);
         ctx.closePath();
         ctx.fillStyle = "#a14"
@@ -181,8 +180,8 @@ class Tile extends Item {
             
         ctx.beginPath();
         ctx.moveTo(isoX(this.x + 1, this.y+1), isoY(this.x + 1, this.y+1)-h);
-        ctx.lineTo(isoX(this.x + 2, this.y+2), isoY(this.x + 2, this.y+2));
-        ctx.lineTo(isoX(this.x + 2, this.y+1), isoY(this.x + 2, this.y+1));
+        ctx.lineTo(isoX(this.x + 2, this.y+2), isoY(this.x + 2, this.y+2)-h-40);
+        ctx.lineTo(isoX(this.x + 2, this.y+1), isoY(this.x + 2, this.y+1)-h-40);
         ctx.lineTo(isoX(this.x + 1 , this.y), isoY(this.x + 1, this.y)-h);
         ctx.closePath();
         ctx.fillStyle = "#a14"
@@ -190,7 +189,12 @@ class Tile extends Item {
         ctx.strokeStyle = "#fff";
         ctx.lineWidth = 2;
         ctx.stroke();
-            
+        
+        // draw image
+        //  const isoX=(x,y)=>(x-y)*GameInit.tileW/2
+        //  const isoY=(x,y)=>(x+y)*GameInit.tileW/4
+        ctx.drawImage(GameInit.image[0], isoX(this.x-1,this.y),isoY(this.x,this.y)-h, GameInit.tileW, GameInit.tileW-40);
+        
         if(!this.hidden){
             ctx.font = "bold 20px sans-serif";
             ctx.fillStyle = "#000";
@@ -198,6 +202,7 @@ class Tile extends Item {
         }else{
             ctx.fillText("?", isoX(this.x + 0.5, this.y + 0.5), isoY(this.x + 0.5, this.y + 0.5) - h + 10);
         }
+
     }
 }
 

@@ -1,45 +1,43 @@
 import { abs, resetXY, sign } from "./basic";
 import { canvas, ctx } from "./canvas";
+import { GameInit } from "./init";
 import { Vector } from "./vector";
 
 class Camera {
-  constructor(pos, zoom = 1, rotation = 0) {
+  constructor(pos, zoom = 1) {
     this.pos = pos;
-    this.targetPos = pos.clone();
+    this.tPos = pos.clone();
     this.zoom = zoom;
-    this.zoomTarget = zoom;
-    this.rotation = rotation;
-    this.rotationTarget = rotation;
-    this.boundary = resetXY(150/zoom, 80/zoom);
+    this.bond = resetXY(150/zoom, 80/zoom);
     this.smoothness = 0.01;
   }
 
   follow(pos) {
 
-    const diffXY = pos.substract(this.targetPos)
+    const diffXY = pos.substract(this.tPos)
     
-    if (abs(diffXY.x) > this.boundary.x) {
+    if (abs(diffXY.x) > this.bond.x) {
 
-      this.targetPos = pos.substract(resetXY(this.boundary.x*sign(diffXY.x),0))
-
-    }
-    if (abs(diffXY.y) > this.boundary.y) {
-
-      this.targetPos = pos.substract(resetXY(0,this.boundary.y*sign(diffXY.y)))
+      this.tPos = pos.substract(resetXY(this.bond.x*sign(diffXY.x),0))
 
     }
+    if (abs(diffXY.y) > this.bond.y) {
+
+      this.tPos = pos.substract(resetXY(0,this.bond.y*sign(diffXY.y)))
+
+    }
+    this.update()
   }
 
   update() {
     
-    this.pos.add(this.targetPos.clone().substract(this.pos).dot(this.smoothness))
-    
+    this.pos.add(this.tPos.clone().substract(this.pos).dot(this.smoothness))
+    this.draw()
   }
 
   draw() {
-    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.translate(GameInit.window_width / 2, GameInit.window_height / 2);
     ctx.scale(this.zoom, this.zoom);
-    ctx.rotate(this.rotation);
     ctx.translate(-this.pos.x, -this.pos.y);
   }
 }

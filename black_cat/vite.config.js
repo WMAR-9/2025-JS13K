@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html'
 // import htmlMinimize from 'vite-plugin-html-compress';
-// import viteImagemin from 'vite-plugin-imagemin';
+import viteImagemin from 'vite-plugin-imagemin';
 
 export default defineConfig({
   base: './',
@@ -32,6 +32,12 @@ export default defineConfig({
   plugins: [
     createHtmlPlugin({
       minify: true
+    }),
+    viteImagemin({
+       pngquant: {
+        quality: [0.65, 0.9],
+        speed: 4
+      },
     })
   ],
   server: {

@@ -2,6 +2,7 @@ import { max } from "./basic";
 import { canvas, ctx } from "./canvas";
 import { GameInit } from "./init";
 import { Action } from "./input";
+import { Msg } from "./msg/msg";
 import { Item } from "./object";
 import { Vector } from "./vector";
 
@@ -11,7 +12,7 @@ class Cat extends Item {
     constructor(x, y, h,k) {
         super(x, y, 32, 32, h, k);
         this.lastKeys = {};
-        this.moving = true;
+        this.moving = 1;
         this.nextPos = null;
 
         // at home
@@ -20,6 +21,9 @@ class Cat extends Item {
         // 
         this.fall = 0
         this.failFrame = 0
+
+        // move msg
+        this.msg = new Msg(x,y,"meow")
     }
     getTile(x,y){
       return GameInit.tileTable[`${x},${y}`]
@@ -38,13 +42,19 @@ class Cat extends Item {
 
                 let nextTile = this.getTile(nx,ny)
                 let curPlaceTile = this.getTile(this.x,this.y)
-                if (!nextTile||!curPlaceTile) continue;
+                if (!nextTile||!curPlaceTile){
+                  this.msg.show()
+                  continue;
+                }
                 
                 // keep the height of tile 
                 this.h = max(curPlaceTile.h,this.h);
 
                 let dh = nextTile.h - this.h;
-                if (dh > 1) continue;
+                if (dh > 1){
+                  this.msg.show()
+                  continue;
+                }
 
                 
                 // height stack of cat
@@ -67,7 +77,10 @@ class Cat extends Item {
 
                 // check nextTile have block tunnel 
                 let nextTunnel = this.getTunnel(nx,ny,targetH+1,this.k)
-                if(nextTunnel)continue; 
+                if(nextTunnel){
+                  this.msg.show()
+                  continue; 
+                }
                 
                 this.nextPos = { x: nx, y: ny, h: targetH };
             }
@@ -103,7 +116,7 @@ class Cat extends Item {
 
         this.targetpos.setX(this.nextPos.x).setY(this.nextPos.y);
         this.h = this.nextPos.h;
-        this.moving = true;
+        this.moving = 1;
     }
     update() {
       if (this.fall){
@@ -122,6 +135,9 @@ class Cat extends Item {
 
       }else{
         if (this.moving) {
+          //msg 
+          this.msg.reset()
+
           let curTile = this.getTile(this.targetpos.x,this.targetpos.y)
 
           let h = curTile ? curTile.h+10 : 0;
@@ -137,7 +153,7 @@ class Cat extends Item {
             this.pos = targetPos.clone();
             this.x = this.targetpos.x;
             this.y = this.targetpos.y;
-            this.moving = false;
+            this.moving = 0;
             this.nextPos = null; // reset
           }
         }
@@ -146,6 +162,15 @@ class Cat extends Item {
     }
 
     trigger(){
+      // message 
+      this.msg.changeXY(this.pos);
+
+      if (!this.msg.active && Math.random() < 0.3) {
+        this.msg.active = 1;
+      }else{
+        this.msg.draw()
+      }
+
       // tile function
       this.home = 0
       const tileType = this.getTile(this.x,this.y)
@@ -158,11 +183,12 @@ class Cat extends Item {
         // home tile
         if(tileType.k>=1 && tileType.k<=5){
           this.home = 1
+          this.msg.show()
         }
 
         // zero tile
-        if(tileType.k>=6&&tileType.k<=10){
-          GameInit.item.map(e=>e.resetzero())
+        if(tileType.k>=6&&tileType.k<=10 && !tileType.zeroBtn){
+          GameInit.item.map(e=>(e.k==0 || (e.k>=16&&e.k<=20) || e==tileType)?e.resetzero():0)
         }
 
         // cross tile
@@ -196,19 +222,39 @@ class Cat extends Item {
           this.restoreXYZ(tmp.x,tmp.y,tmp.h,new Vector(tmp.pos.x,tmp.pos.y))
 
         }
-
       }
     }
+    isMask() {
+        return GameInit.item.some(i => 
+            i !== this &&
+            i.x >= this.x &&
+            i.y >= this.y &&
+            i.h > this.h+1
+        );
+    }
     draw() {
+
         ctx.save();
+        
         ctx.beginPath();
+
+        if(this.isMask()){
+          ctx.globalCompositeOperation = "lighter";  
+          ctx.globalAlpha = 0.5;
+        }else{
+          ctx.globalCompositeOperation = "source-over";  
+          ctx.globalAlpha = 1;
+        }
+        
         ctx.arc(this.pos.x, this.pos.y, 12, 0, Math.PI * 2);
-        //ctx.globalCompositeOperation = "lighter";
+        
+        // ctx.globalAlpha = .5
         ctx.fillStyle = `#${GameInit.theme.surfaceColor[this.k]}`;
         ctx.fill();
-        ctx.fillStyle = "#000";
+        
         ctx.font = "20px Arial";
         ctx.fillText(`${this.h},${this.k}`, this.pos.x - 5, this.pos.y - 15);
+        ctx.closePath();
         ctx.restore();
     }
     

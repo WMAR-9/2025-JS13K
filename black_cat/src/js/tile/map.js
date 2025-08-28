@@ -2,6 +2,7 @@ import { Cat } from "../Cat"
 import { GameInit } from "../init"
 import { Item } from "../object";
 import { Timer } from "../timer";
+import { TransitionEffect } from "../trans/transform";
 import { Vector } from "../vector";
 import { Tile } from "./tileitem"
 
@@ -32,7 +33,6 @@ class GameMap {
   
   changelevel(level){
     GameInit.restartLevel = 0
-    GameInit.levelcleared = 1
 
     GameInit.level = level
 
@@ -43,8 +43,8 @@ class GameMap {
     
     this.initMap()
     this.genMap()
-    
     GameInit.levelcleared = 0
+
   }
   genMap(){
     let currentMap = GameInit.mapLevel[GameInit.level]
@@ -77,7 +77,9 @@ class GameMap {
         console.log(GameInit.cats)
       }
     }
-    this.save()
+
+    // start animation 
+    GameInit.transOn = new TransitionEffect(0,100)
   }
 
   initMap(){
@@ -118,4 +120,4 @@ class GameMap {
   }
 }
 
-export {GameMap}
+export {GameMap,classRegistry,revive}

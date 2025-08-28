@@ -10,4 +10,4 @@ const toPng = a =>a.toDataURL()
 const canvas = getCanvas('a')
 const ctx = getContext(canvas);
 
-export { canvas, ctx }
+export { canvas, ctx ,createImg,toPng}

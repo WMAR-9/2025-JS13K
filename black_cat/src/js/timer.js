@@ -4,6 +4,7 @@ class Timer {
     constructor(step = 1,loop=0) {
         this.set(0,1,step)
         this.loop = loop
+        this.e=0
     }
 
     set(startTime, endTime, step) {
@@ -30,17 +31,17 @@ class Timer {
     
     reset() {
         this.startTime = 0;
+        this.e=0
     }
 
     start() {
         if (this.startTime < this.endTime) {
             this.add()
-            return;
         } else {
+            this.e=1
             if(this.loop){
                 this.reset()
             }
-            return;
         }
     }
     // animate

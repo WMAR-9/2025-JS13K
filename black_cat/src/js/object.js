@@ -20,9 +20,9 @@ class Item{
         this.k = kind
 
         // direction
-        this.dtimer = new Timer(0.1,1)
+        this.dtimer = new Timer(1/60,1)
         
-        this.timer = new Timer()
+        this.timer = new Timer(1/60)
         
         // speed
         this.speed = 8
@@ -48,14 +48,14 @@ class Item{
 
     toData() {
         return {
-        __class: "Item",   // ✅ 保留 class 名稱
+        __class: "Item",
         x: this.x,
         y: this.y,
         h: this.h,
         k: this.k,
         n: this.n,
         b: this.b,
-        pos: this.pos.toData(),      // ✅ 遞迴
+        pos: this.pos.toData(),
         targetpos: this.targetpos.toData(),
         prevpos: this.prevpos.toData(),
         spos: this.spos.toData()
