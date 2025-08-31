@@ -7,9 +7,9 @@ class Timer {
         this.e=0
     }
 
-    set(startTime, endTime, step) {
-        this.startTime = startTime;
-        this.endTime = endTime;
+    set(s, et, step) {
+        this.s = s;
+        this.et = et;
         this.step = step;
     }
     
@@ -18,11 +18,11 @@ class Timer {
     }
 
     add() {
-        this.startTime += this.step;
+        this.s += this.step;
     }
     
     sub() {
-        this.startTime -= this.step;
+        this.s -= this.step;
     }
 
     clone(){
@@ -30,12 +30,12 @@ class Timer {
     }
     
     reset() {
-        this.startTime = 0;
+        this.s = 0;
         this.e=0
     }
 
     start() {
-        if (this.startTime < this.endTime) {
+        if (this.s < this.et) {
             this.add()
         } else {
             this.e=1
@@ -46,7 +46,7 @@ class Timer {
     }
     // animate
     get progress() {
-        return min(this.startTime / this.endTime, 1);
+        return min(this.s / this.et, 1);
     }
 }
 

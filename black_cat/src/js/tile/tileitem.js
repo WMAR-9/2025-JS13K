@@ -1,5 +1,5 @@
-import { floor, isoX, isoY } from "../basic";
-import { canvas, ctx } from "../canvas";
+import { floor, isoX, isoY, resetXY, shadeColor } from "../basic";
+import { ctx, dIso } from "../canvas";
 import { GameInit } from "../init";
 import { Item } from "../object";
 
@@ -7,14 +7,14 @@ class Tile extends Item {
     constructor(x, y, h, k, num=0,block=0) {
         super(x, y, 32, 32, h, k,num,block);
         
-        // num have two use 1.count 2. type of cat 
+        // num have two use 1.count 2. ty of cat 
         this.hiddenTile()
         // zero only once 
         this.zeroBtn = 0
         
-        // type divide
-        if(k!=0&&block==0)this.type = floor((k - 1) / 5) * 5
-        else this.type = 0
+        // ty divide
+        if(k!=0&&block==0)this.ty = floor((k - 1) / 5) * 5
+        else this.ty = 0
 
         //cross 
         this.fragments = null;
@@ -27,30 +27,22 @@ class Tile extends Item {
         ...super.toData(),
         __class: "Tile",
         zeroBtn: this.zeroBtn,
-        type: this.type,
-        hidden: this.hidden,
-        fragments: this.fragments,
-        broken: this.broken,
-        canMove: this.canMove
+        ty: this.ty,
+        hidden: this.hidden
         };
     }
 
     static fromData(data) {
         let tile = new Tile(data.x, data.y, data.h, data.k, data.n, data.b);
-        Object.assign(tile, super.fromData(data), {
-        zeroBtn: data.zeroBtn,
-        type: data.type,
-        hidden: data.hidden,
-        fragments: data.fragments,
-        broken: data.broken,
-        canMove: data.canMove
-        });
+        tile.zeroBtn = data.zeroBtn
+        tile.hidden = data.hidden
+        tile.ty = data.ty
         return tile;
     }
     // zero tile 
     resetzero(){
         if(this.zeroBtn)return;
-        if(this.k>=6&&this.k<=10)this.zeroBtn=1
+        if(this.k>=6&&this.k<=10)this.zeroBtn=1;
         this.n = 0
     }
     
@@ -61,7 +53,7 @@ class Tile extends Item {
 
     // hidden tile
     openTile(){
-        this.hidden=0
+        this.hidden = 0
     }
     hiddenTile(){
         this.hidden = this.k>=16&&this.k<=20?1:0
@@ -73,7 +65,7 @@ class Tile extends Item {
     }
 
     drawHome(){
-        ctx.fillStyle = `#${GameInit.theme.surfaceColor[this.k-this.type]}`
+        ctx.fillStyle = `#${GameInit.theme.surfaceColor[this.k-this.ty]}`
         ctx.fillRect(isoX(this.x, this.y)-60, isoY(this.x, this.y+1)-this.h*60 ,100,100)
     }
 
@@ -103,106 +95,90 @@ class Tile extends Item {
         GameInit.item.splice(GameInit.item.indexOf(this), 1);
     }
     draw() {
+        let xx = this.x,yy=this.y
+        const h = this.h *30
+        
+        if(this.b){
+            this.poly(this.x,this.y,h)
+            return ;
+        }
+        
+        // setting block half
+        for(var i = this.h-1;i>=0;i--){
+            this.poly(this.x,this.y,h-i*45)
+            ctx.drawImage(GameInit.ig[0][0], isoX(this.x-1,this.y),isoY(this.x,this.y)-h+i*45, GameInit.tileW, GameInit.tileW-60);
+        }
 
-        const h = this.h * 30
+        let cx = isoX(xx + 0.5, yy + 0.5);
+        let cy = isoY(xx + 0.5, yy + 0.5) - h;
+        
+        let baseSize = GameInit.tileW / 2;
 
         if(this.k>=1 && this.k<=5 && !this.b){
-            //this.drawHome()
-        }
-        // if(this.b==1){
-        //     ctx.save()
-        //     ctx.beginPath();
-        //     ctx.fillStyle="#FFF"
-        //     ctx.globalAlpha= 0.3
-        //     ctx.moveTo(isoX(this.x, this.y), isoY(this.x, this.y) - h-25);
-        //     ctx.lineTo(isoX(this.x + 1, this.y), isoY(this.x + 1, this.y) - h-25);
-        //     ctx.lineTo(isoX(this.x + 1, this.y + 1), isoY(this.x + 1, this.y + 1) - h-25);
-        //     ctx.lineTo(isoX(this.x, this.y + 1), isoY(this.x, this.y + 1) - h-25);
-        //     ctx.closePath();
-        //     // console.log(GameInit.theme.surfaceColor[this.k])
-        //     ctx.fillStyle = `#${GameInit.theme.surfaceColor[this.k-this.type]}`;
-        //     ctx.fill();
-        //     ctx.strokeStyle = "#fff";
-        //     ctx.lineWidth = 2;
-        //     ctx.stroke();
-
-        //     ctx.beginPath();
-        //     ctx.moveTo(isoX(this.x, this.y + 1), isoY(this.x, this.y + 1) -h-25);
-        //     ctx.lineTo(isoX(this.x + 1, this.y+2), isoY(this.x + 1, this.y+2)-h-25);
-        //     ctx.lineTo(isoX(this.x + 2, this.y+2), isoY(this.x + 2, this.y+2)-h-25);
-        //     ctx.lineTo(isoX(this.x + 1, this.y+1), isoY(this.x + 1, this.y+1)-h-25);
-        //     ctx.fillStyle = "#014";
-        //     ctx.fill();
-        //     ctx.strokeStyle = "#fff";
-        //     ctx.lineWidth = 2;
-        //     ctx.stroke();
-        //     ctx.closePath();
-
-        //     ctx.beginPath();
-        //     ctx.moveTo(isoX(this.x + 1, this.y+1), isoY(this.x + 1, this.y+1)-h-25);
-        //     ctx.lineTo(isoX(this.x + 2, this.y+2), isoY(this.x + 2, this.y+2)-h-25);
-        //     ctx.lineTo(isoX(this.x + 2, this.y+1), isoY(this.x + 2, this.y+1)-h-25);
-        //     ctx.lineTo(isoX(this.x + 1 , this.y), isoY(this.x + 1, this.y)-h-25);
-        //     ctx.closePath();
-        //     ctx.fillStyle = "#014"
-        //     ctx.fill();
-        //     ctx.strokeStyle = "#fff";
-        //     ctx.lineWidth = 2;
-        //     ctx.stroke();
-        //     ctx.restore()
-        //     return;
-        // }
-        ctx.beginPath();
-        ctx.fillStyle="#FFF"
-        ctx.moveTo(isoX(this.x, this.y), isoY(this.x, this.y) - h);
-        ctx.lineTo(isoX(this.x + 1, this.y), isoY(this.x + 1, this.y) - h);
-        ctx.lineTo(isoX(this.x + 1, this.y + 1), isoY(this.x + 1, this.y + 1) - h);
-        ctx.lineTo(isoX(this.x, this.y + 1), isoY(this.x, this.y + 1) - h);
-        ctx.closePath();
-        // console.log(GameInit.theme.surfaceColor[this.k])
-        ctx.fillStyle = `#${GameInit.theme.surfaceColor[this.k-this.type]}`;
-        ctx.fill();
-        ctx.strokeStyle = "#333";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-            
-        ctx.beginPath();
-        ctx.moveTo(isoX(this.x, this.y + 1), isoY(this.x, this.y + 1)-h);
-        ctx.lineTo(isoX(this.x + 1, this.y+2), isoY(this.x + 1, this.y+2)-h-40);
-        ctx.lineTo(isoX(this.x + 2, this.y+2), isoY(this.x + 2, this.y+2)-h-40);
-        ctx.lineTo(isoX(this.x + 1, this.y+1), isoY(this.x + 1, this.y+1)-h);
-        ctx.closePath();
-        ctx.fillStyle = "#a14"
-        ctx.fill();
-        ctx.strokeStyle = "#fff";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-            
-        ctx.beginPath();
-        ctx.moveTo(isoX(this.x + 1, this.y+1), isoY(this.x + 1, this.y+1)-h);
-        ctx.lineTo(isoX(this.x + 2, this.y+2), isoY(this.x + 2, this.y+2)-h-40);
-        ctx.lineTo(isoX(this.x + 2, this.y+1), isoY(this.x + 2, this.y+1)-h-40);
-        ctx.lineTo(isoX(this.x + 1 , this.y), isoY(this.x + 1, this.y)-h);
-        ctx.closePath();
-        ctx.fillStyle = "#a14"
-        ctx.fill();
-        ctx.strokeStyle = "#fff";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        
-        // draw image
-        //  const isoX=(x,y)=>(x-y)*GameInit.tileW/2
-        //  const isoY=(x,y)=>(x+y)*GameInit.tileW/4
-        ctx.drawImage(GameInit.image[0], isoX(this.x-1,this.y),isoY(this.x,this.y)-h, GameInit.tileW, GameInit.tileW-40);
-        
-        if(!this.hidden){
-            ctx.font = "bold 20px sans-serif";
-            ctx.fillStyle = "#000";
-            ctx.fillText(this.n, isoX(this.x + 0.5, this.y + 0.5), isoY(this.x + 0.5, this.y + 0.5) - h + 10);
-        }else{
-            ctx.fillText("?", isoX(this.x + 0.5, this.y + 0.5), isoY(this.x + 0.5, this.y + 0.5) - h + 10);
+           this.dt.start()
+           dIso(GameInit.ig[0][2],0,baseSize,cx,cy,1,this.dt.progress*3.5,1);
         }
 
+        if (this.k >= 6 && this.k <= 10){
+            dIso(GameInit.f[0][2], 0, baseSize,cx,cy);
+        }
+
+        if (this.k >= 11 && this.k <= 15){
+            dIso(GameInit.f['x'][2], 0, baseSize,cx,cy);
+        }
+
+        if (this.k == 0 || (this.k >= 16 && this.k <= 20)) {
+
+            if (this.hidden) {
+                dIso(GameInit.f['?'][2], 0, baseSize,cx,cy);
+                return;
+            }
+
+            const digits = String(this.n).split('').map(Number);
+            const size = baseSize / digits.length;
+
+            digits.forEach((d, i) => {
+                const offsetX = (i - (digits.length - 1) / 2) * size;
+                dIso(GameInit.f[d][3], offsetX, size,cx,cy);
+            });
+
+        }
+
+        if (this.k >= 21 && this.k <= 25){
+            this.dt.start()
+            dIso(GameInit.ig[5][2],0,baseSize,cx,cy,0,this.dt.progress*3.5,1);
+        }
+
+    }
+    poly(xx,yy,h) {
+
+        const faces = [
+                [
+                    [0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]
+                ],
+                [
+                    [0, 1, 0], [1, 2, 0, 50], [2, 2, 0, 50], [1, 1, 0]
+                ],
+                [
+                    [1, 1, 0], [2, 2, 0, 50], [2, 1, 0, 50], [1, 0, 0]
+                ]
+        ];
+
+        faces.forEach((a,i) => {
+            ctx.beginPath();
+            a.map(([dx, dy, dh = 0, dz = 0],i) =>{
+                const { x, y } = resetXY(isoX(xx+dx, yy+dy), isoY(xx+dx, yy+dy) - (h+dh) - dz);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }),
+            ctx.closePath();
+            ctx.fillStyle = shadeColor(`${GameInit.theme.surfaceColor[this.k - this.ty]}`,i*20);
+            ctx.fill();
+            ctx.strokeStyle = shadeColor(`666666`,i*30);
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        })
+        
     }
 }
 

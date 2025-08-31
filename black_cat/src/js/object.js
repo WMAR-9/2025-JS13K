@@ -20,8 +20,8 @@ class Item{
         this.k = kind
 
         // direction
-        this.dtimer = new Timer(1/60,1)
-        
+        this.dt = new Timer(1/60,1)
+
         this.timer = new Timer(1/60)
         
         // speed

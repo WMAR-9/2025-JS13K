@@ -92,10 +92,7 @@ class GameMap {
   save(){
    GameInit.prevMap.push({
     items: GameInit.item.map(i => i.toData()),
-    cats: GameInit.cats.map(c => c.toData()),
-    tileTable: Object.fromEntries(
-        Object.entries(GameInit.tileTable).map(([k,v]) => [k, v.toData()])
-      )
+    cats: GameInit.cats.map(c => c.toData())
     })
   }
   undo(){
@@ -110,13 +107,19 @@ class GameMap {
     const last = GameInit.prevMap.pop();
     if (!last) return null;
     
-    GameInit.item = last.items.map(revive);
-    console.log(GameInit.item)
     GameInit.cats = last.cats.map(revive);
-    console.log(GameInit.cats)
-    GameInit.tileTable = Object.fromEntries(
-      Object.entries(last.tileTable).map(([k, v]) => [k, revive(v)])
-    );
+    GameInit.tileTable = {}
+    GameInit.item = last.items.map(item => {
+      let revived = revive(item);
+      let key;
+      if (revived.b == 0) {
+        key = `${revived.x},${revived.y}`;
+      } else {
+        key = `${revived.x},${revived.y},${revived.h},${revived.k}`;
+      }
+      GameInit.tileTable[key] = revived;
+      return revived;
+    });
   }
 }
 

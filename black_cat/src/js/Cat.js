@@ -125,12 +125,12 @@ class Cat extends Item {
 
         this.h = this.h - (this.h / fallDuration) * this.failFrame;
 
-        this.pos.x += Math.sin(this.failFrame/5) * 3.5;
         this.pos.y += 10; 
 
         if(this.failFrame >= fallDuration) {
+
           GameInit.restartLevel = 1
-          console.log("Game Over!");
+
         }
 
       }else{
@@ -175,8 +175,9 @@ class Cat extends Item {
       this.home = 0
       const tileType = this.getTile(this.x,this.y)
       if(!tileType)return
+
       // Home,Zero,cross,Hidden tiles
-      if(tileType.k - tileType.type == this.k){
+      if(tileType.k - tileType.ty == this.k){
         // console.log(`index ${this.k} start check`)
         // console.log(`Tile index ${tileType.k},${tileType.type} start check`)
         
@@ -188,7 +189,7 @@ class Cat extends Item {
 
         // zero tile
         if(tileType.k>=6&&tileType.k<=10 && !tileType.zeroBtn){
-          GameInit.item.map(e=>(e.k==0 || (e.k>=16&&e.k<=20) || e==tileType)?e.resetzero():0)
+          GameInit.item.map(e=>(e.k==0 || (e.k>=16&&e.k<=20) || (e.x==tileType.x && e.y==tileType.y) )?e.resetzero():0)
         }
 
         // cross tile
@@ -198,7 +199,6 @@ class Cat extends Item {
             GameInit.cats.map(c =>{
               if(c.x === this.x && c.y === this.y) c.fall = 1
             });
-
             tileType.destory()
           }
         }
@@ -213,7 +213,7 @@ class Cat extends Item {
           
         if(this.h==tileType.h){
           
-          let changeCat = GameInit.cats.find(cat=>cat.k==tileType.k-tileType.type && cat != this)
+          let changeCat = GameInit.cats.find(cat=>cat.k==tileType.k-tileType.ty && cat != this)
 
           if(!changeCat)return;
 
@@ -228,7 +228,9 @@ class Cat extends Item {
         return GameInit.item.some(i => 
             i !== this &&
             i.x >= this.x &&
+            i.x <= this.x+1 &&
             i.y >= this.y &&
+            i.y <= this.y+1 &&
             i.h > this.h+1
         );
     }
@@ -248,12 +250,9 @@ class Cat extends Item {
         
         ctx.arc(this.pos.x, this.pos.y, 12, 0, Math.PI * 2);
         
-        // ctx.globalAlpha = .5
         ctx.fillStyle = `#${GameInit.theme.surfaceColor[this.k]}`;
         ctx.fill();
-        
-        ctx.font = "20px Arial";
-        ctx.fillText(`${this.h},${this.k}`, this.pos.x - 5, this.pos.y - 15);
+
         ctx.closePath();
         ctx.restore();
     }

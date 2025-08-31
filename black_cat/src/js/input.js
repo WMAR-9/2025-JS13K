@@ -33,7 +33,7 @@ class Action {
     if(e.repeat)return;
     
     if (t==="keydown"){
-        this.keyIn[k]=1;
+      this.keyIn[k]=1;
     }
     if (t==="keyup"){
       this.keyIn[k]=0;
@@ -44,11 +44,10 @@ class Action {
     this.keyEvent = Object.values(this.keyIn).some(v=>v===1||v?.active);
 
     if (this.keyEvent && this.gamemap && typeof this.gamemap.save === "function" && typeof this.gamemap.undo === "function") {
-      if (GameInit.moves[k]) {  
-        console.log("snapshot:", GameInit.cats);
-        
+      if (GameInit.moves[k] && GameInit.cats.every(e => !e.moving && e.fall==0)) { 
         this.gamemap.save()
         GameInit.item.map(e=>e.plusmove())
+
       }
       if (k == 81) { // Q = undo
         this.gamemap.undo()

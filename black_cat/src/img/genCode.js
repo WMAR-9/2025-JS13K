@@ -162,16 +162,15 @@ async function imageToPaletteIndex(path, palette, transparentIndex = 0, alphaThr
 const colorPalette = [
   [800,800,800],
   [0, 0, 0],
-  [255, 255, 255]
   // ...
 ];
 
 (async () => {
   const gen = new genCode();
   const de = new deCode();
-  const blocksize = 11;
-  const blocksizeY = 16;
-  const array2D = await imageToPaletteIndex("./block.png", colorPalette);
+  const blocksize = 130;
+  const blocksizeY = 5;
+  const array2D = await imageToPaletteIndex("./font.png", colorPalette);
   console.log("2D Array:", array2D);
 
   // turn block (16x16 blocks)
