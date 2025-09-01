@@ -65,8 +65,8 @@ class Tile extends Item {
     }
 
     drawHome(){
-        ctx.fillStyle = `#${GameInit.theme.surfaceColor[this.k-this.ty]}`
-        ctx.fillRect(isoX(this.x, this.y)-60, isoY(this.x, this.y+1)-this.h*60 ,100,100)
+        // ctx.fillStyle = `#${GameInit.theme.surC[this.k-this.ty]}`
+        // ctx.fillRect(isoX(this.x, this.y)-60, isoY(this.x, this.y+1)-this.h*60 ,100,100)
     }
 
     tunnel(){
@@ -172,7 +172,7 @@ class Tile extends Item {
                 else ctx.lineTo(x, y);
             }),
             ctx.closePath();
-            ctx.fillStyle = shadeColor(`${GameInit.theme.surfaceColor[this.k - this.ty]}`,i*20);
+            ctx.fillStyle = shadeColor(`${GameInit.theme.surC[this.k - this.ty]}`,i*20);
             ctx.fill();
             ctx.strokeStyle = shadeColor(`666666`,i*30);
             ctx.lineWidth = 2;

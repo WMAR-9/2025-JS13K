@@ -24,8 +24,7 @@ class Action {
   }
 
   handle(e) {
-    e.preventDefault();
-    
+
     let k = e.which||0, t = e.type;
     // stop key
     if(GameInit.levelcleared)return;
@@ -39,8 +38,25 @@ class Action {
       this.keyIn[k]=0;
     }
     
-    if (t==="mousedown"||t==="touchstart") this.keyIn.mouse={...this.pos(e),active:1};
-    if (t==="mouseup"||t==="touchend") this.keyIn.mouse={...this.keyIn.mouse,active:0};
+    if (t==="mousedown"||t==="touchstart") {
+      
+      let p = this.pos(e);
+      
+      this.keyIn.mouse = {...p, active:1};
+      
+      let btn = GameInit.mbtn;
+
+      if (p.x>=btn.x && p.x<=btn.x+btn.w && p.y>=btn.y && p.y<=btn.y+btn.h) {
+          if(btn.t==2){
+            GameInit.state=2
+            GameInit.restartLevel=1
+          }
+      }
+    }
+
+    if (t==="mouseup"||t==="touchend") {
+      this.keyIn.mouse={...this.keyIn.mouse,active:0};
+    }
     this.keyEvent = Object.values(this.keyIn).some(v=>v===1||v?.active);
 
     if (this.keyEvent && this.gamemap && typeof this.gamemap.save === "function" && typeof this.gamemap.undo === "function") {
@@ -60,27 +76,5 @@ class Action {
   isDown(k){ return this.keyIn[k]===1; }
   hasInput(){ return !!this.keyEvent; }
 }
-
-function getMousePos(event) {
-
-    if (event.clientX && event.clientY) {
-        return {
-            x: event.offsetX,
-            y: event.offsetY
-        };
-    }
-    //
-    if (event.touches && event.touches[0]) {
-        const rect = canvas.getBoundingClientRect();
-        return {
-            x: event.touches[0].clientX - rect.left,
-            y: event.touches[0].clientY - rect.top
-        };
-    }
-
-    return { x: 0, y: 0 };
-}
-
-
 
 export {Action}

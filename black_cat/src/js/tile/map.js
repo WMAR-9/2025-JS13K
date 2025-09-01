@@ -47,6 +47,7 @@ class GameMap {
 
   }
   genMap(){
+    console.log(GameInit.item)
     let currentMap = GameInit.mapLevel[GameInit.level]
     for (let obj in currentMap) {
       if (obj==0) {

@@ -13,7 +13,7 @@ class TransitionEffect {
       timer: new Timer(1/duration), 
     }));
 
-    this.mr = max(GameInit.window_width,GameInit.window_height);
+    this.mr = max(GameInit.wwid,GameInit.whei);
     this.minr = .5;
     this.isrun = 1;
     this.fadeIn = fadeIn;

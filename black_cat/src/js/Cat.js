@@ -250,7 +250,7 @@ class Cat extends Item {
         
         ctx.arc(this.pos.x, this.pos.y, 12, 0, Math.PI * 2);
         
-        ctx.fillStyle = `#${GameInit.theme.surfaceColor[this.k]}`;
+        ctx.fillStyle = `#${GameInit.theme.surC[this.k]}`;
         ctx.fill();
 
         ctx.closePath();

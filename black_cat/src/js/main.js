@@ -10,6 +10,7 @@ import { TransitionEffect } from "./trans/transform";
 import { Vector } from "./vector";
 import blocks from '../img/all.png';
 import { allPng } from "./assest/createAsset";
+import { TypewriterSprite } from "./trans/typeing";
 
 
 const map = new GameMap()
@@ -62,12 +63,12 @@ const initGame =async ()=>{
 
     map.genMap()
 }
-
-const drawHomeMenu =_=>{
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // ctx.drawImage(GameInit.f['0'][0],canvas.width / 8,canvas.height / 2,64,64);
-  ctx.drawImage(GameInit.ig[4][1],canvas.width / 8,canvas.height / 2,64,64);
-  ctx.fillText("My Game Title", canvas.width / 2, canvas.height / 2 - 50);
+let tw = new TypewriterSprite(
+    "Story AFA\nwjti\nasdf\n  asdf\n love you cattie",             
+    { cps: 3} 
+);
+const drawHomeMenu =_=> {
+  tw.update()
 }
 
 const drawGame=()=>{
@@ -114,19 +115,20 @@ const drawGame=()=>{
     if(GameInit.transOn){
       GameInit.transOn.update()
       if(!GameInit.transOn.isrun){
-        GameInit.transOn = null
         if(GameInit.levelcleared){
           console.log("全部到家，進入下一關！");
           map.changelevel(GameInit.level+1)
         }
+        GameInit.transOn = null
       }
     }
 }
 
 const gameLoop = _=>{
     
-    GameInit.window_width = canvas.width = window.innerWidth
-    GameInit.window_height = canvas.height = window.innerHeight
+    GameInit.wwid = canvas.width = window.innerWidth
+    GameInit.whei = canvas.height = window.innerHeight
+
     if(GameInit.state<2){
       drawHomeMenu()
     }else{

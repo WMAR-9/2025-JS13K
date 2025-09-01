@@ -36,7 +36,7 @@ class Camera {
   }
 
   draw() {
-    ctx.translate(GameInit.window_width / 2, GameInit.window_height / 2);
+    ctx.translate(GameInit.wwid / 2, GameInit.whei / 2);
     ctx.scale(this.zoom, this.zoom);
     ctx.translate(-this.pos.x, -this.pos.y);
   }
