@@ -1,3 +1,4 @@
+import { play } from "../audio/audio1";
 import { floor, isoX, isoY, resetXY, shadeColor } from "../basic";
 import { ctx, dIso } from "../canvas";
 import { GameInit } from "../init";
@@ -39,9 +40,12 @@ class Tile extends Item {
         tile.ty = data.ty
         return tile;
     }
+    islose(){
+        return this.n>13
+    }
     // zero tile 
     resetzero(){
-        if(this.zeroBtn)return;
+        if(this.zeroBtn||this.islose())return;
         if(this.k>=6&&this.k<=10)this.zeroBtn=1;
         this.n = 0
     }
@@ -62,15 +66,6 @@ class Tile extends Item {
     update(){
         // init hidden mode when cat is not in tile
         this.hiddenTile()
-    }
-
-    drawHome(){
-        // ctx.fillStyle = `#${GameInit.theme.surC[this.k-this.ty]}`
-        // ctx.fillRect(isoX(this.x, this.y)-60, isoY(this.x, this.y+1)-this.h*60 ,100,100)
-    }
-
-    tunnel(){
-        
     }
 
     destory(){
@@ -95,72 +90,78 @@ class Tile extends Item {
         GameInit.item.splice(GameInit.item.indexOf(this), 1);
     }
     draw() {
-        let xx = this.x,yy=this.y
-        const h = this.h *30
-        
+        ctx.save()
+        ctx.globalAlpha=this.a
+        let xx = this.x,yy=this.y,size = GameInit.tileW
+        const h = this.h * size/5
+
+        let cx = isoX(xx + 0.5, yy + 0.5);
+        let cy = isoY(xx + 0.5, yy + 0.5) - h;
+        let baseSize = size / 2;
+
         if(this.b){
-            this.poly(this.x,this.y,h)
+            ctx.save()
+            ctx.globalAlpha=.6
+            ctx.globalCompositeOperation = "source-atop"
+            dIso(GameInit.ig[6][this.k],0,size/1.3,cx,cy+size/6,.5,1,0,1);
+            ctx.restore()
             return ;
         }
         
         // setting block half
         for(var i = this.h-1;i>=0;i--){
-            this.poly(this.x,this.y,h-i*45)
-            ctx.drawImage(GameInit.ig[0][0], isoX(this.x-1,this.y),isoY(this.x,this.y)-h+i*45, GameInit.tileW, GameInit.tileW-60);
+            this.poly(this.x,this.y,h-i*size/4)
+            //ctx.drawImage(GameInit.ig[0][3], isoX(this.x-1,this.y),isoY(this.x,this.y)-h+i*size/4, size, size/1.4);
         }
-
-        let cx = isoX(xx + 0.5, yy + 0.5);
-        let cy = isoY(xx + 0.5, yy + 0.5) - h;
-        
-        let baseSize = GameInit.tileW / 2;
 
         if(this.k>=1 && this.k<=5 && !this.b){
            this.dt.start()
-           dIso(GameInit.ig[0][2],0,baseSize,cx,cy,1,this.dt.progress*3.5,1);
+           dIso(GameInit.ig[1][this.k%5],0,size/1.5,cx,cy-baseSize/5,1,1,this.dt.progress*3.5,1);
         }
 
-        if (this.k >= 6 && this.k <= 10){
-            dIso(GameInit.f[0][2], 0, baseSize,cx,cy);
+        if (this.k >= 6 && this.k <= 10 && !this.zeroBtn){
+           this.dt.start()
+           dIso(GameInit.ig[2][this.k%5],0,baseSize/1.5,cx,cy-baseSize/5,1,1,this.dt.progress*3.5,1);
         }
 
         if (this.k >= 11 && this.k <= 15){
-            dIso(GameInit.f['x'][2], 0, baseSize,cx,cy);
+            dIso(GameInit.f['x'][this.k%5], 0, baseSize,cx,cy);
         }
 
         if (this.k == 0 || (this.k >= 16 && this.k <= 20)) {
 
             if (this.hidden) {
-                dIso(GameInit.f['?'][2], 0, baseSize,cx,cy);
+                dIso(GameInit.f['?'][this.k%5], 0, baseSize,cx,cy);
                 return;
             }
 
             const digits = String(this.n).split('').map(Number);
-            const size = baseSize / digits.length;
+            const size1 = baseSize / digits.length;
 
             digits.forEach((d, i) => {
-                const offsetX = (i - (digits.length - 1) / 2) * size;
-                dIso(GameInit.f[d][3], offsetX, size,cx,cy);
+                const offsetX = (i - (digits.length - 1) / 2) * size1;
+                dIso(GameInit.f[d][this.k%5], offsetX, size1,cx,cy);
             });
 
         }
 
         if (this.k >= 21 && this.k <= 25){
             this.dt.start()
-            dIso(GameInit.ig[5][2],0,baseSize,cx,cy,0,this.dt.progress*3.5,1);
+            dIso(GameInit.ig[5][this.k%5],0,baseSize,cx,cy,1,0,this.dt.progress*3.5,1);
         }
-
+        ctx.restore()
     }
     poly(xx,yy,h) {
-
+        const size = GameInit.tileW/3.75
         const faces = [
                 [
                     [0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]
                 ],
                 [
-                    [0, 1, 0], [1, 2, 0, 50], [2, 2, 0, 50], [1, 1, 0]
+                    [0, 1, 0], [1, 2, 0, size], [2, 2, 0, size], [1, 1, 0]
                 ],
                 [
-                    [1, 1, 0], [2, 2, 0, 50], [2, 1, 0, 50], [1, 0, 0]
+                    [1, 1, 0], [2, 2, 0, size], [2, 1, 0, size], [1, 0, 0]
                 ]
         ];
 
@@ -172,13 +173,12 @@ class Tile extends Item {
                 else ctx.lineTo(x, y);
             }),
             ctx.closePath();
-            ctx.fillStyle = shadeColor(`${GameInit.theme.surC[this.k - this.ty]}`,i*20);
+            ctx.fillStyle = shadeColor(`${GameInit.theme.surC[this.k%5]}`,i*20);
             ctx.fill();
             ctx.strokeStyle = shadeColor(`666666`,i*30);
             ctx.lineWidth = 2;
             ctx.stroke();
         })
-        
     }
 }
 

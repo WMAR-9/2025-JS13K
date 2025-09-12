@@ -1,9 +1,9 @@
 import { min } from "./basic";
 
 class Timer {
-    constructor(step = 1,loop=0) {
+    constructor(step = 1,l=0) {
         this.set(0,1,step)
-        this.loop = loop
+        this.l = l
         this.e=0
     }
 
@@ -26,7 +26,7 @@ class Timer {
     }
 
     clone(){
-      return new Timer(this.step,this.loop)
+      return new Timer(this.step,this.l)
     }
     
     reset() {
@@ -39,7 +39,7 @@ class Timer {
             this.add()
         } else {
             this.e=1
-            if(this.loop){
+            if(this.l){
                 this.reset()
             }
         }

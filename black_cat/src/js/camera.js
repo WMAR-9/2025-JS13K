@@ -1,4 +1,4 @@
-import { abs, resetXY, sign } from "./basic";
+import { abs, floor, resetXY, sign } from "./basic";
 import { canvas, ctx } from "./canvas";
 import { GameInit } from "./init";
 import { Vector } from "./vector";
@@ -9,7 +9,7 @@ class Camera {
     this.tPos = pos.clone();
     this.zoom = zoom;
     this.bond = resetXY(150/zoom, 80/zoom);
-    this.smoothness = 0.01;
+    this.smoothness = 0.0055;
   }
 
   follow(pos) {
@@ -36,9 +36,9 @@ class Camera {
   }
 
   draw() {
-    ctx.translate(GameInit.wwid / 2, GameInit.whei / 2);
+    ctx.translate(GameInit.wwid / 2, GameInit.tileW/2+GameInit.tileW);
     ctx.scale(this.zoom, this.zoom);
-    ctx.translate(-this.pos.x, -this.pos.y);
+    ctx.translate(-this.pos.x,-this.pos.y);
   }
 }
 

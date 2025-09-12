@@ -26,6 +26,9 @@ class Item{
         
         // speed
         this.speed = 8
+
+        // alpha
+        this.a = 1
     }
     update(s){
        return this

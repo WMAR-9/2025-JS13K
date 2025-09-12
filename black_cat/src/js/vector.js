@@ -25,14 +25,19 @@ class Vector{
       return this
     }
     dot(a){
-      this.x *= a
-      this.y *= a
+      this.x *= a 
+      this.y *= a 
       return this;
     }
     devide(a){
       this.x /= a
       this.y /= a
       return this;
+    }
+    multiply(a){
+      this.x*=a
+      this.y*=a
+      return this
     }
     clone(){
       return new Vector(this.x,this.y,this.wh)
@@ -49,6 +54,7 @@ class Vector{
       const x = isoX(this.x,this.y)
       this.y = isoY(this.x,this.y)
       this.x = x
+      return this
     }
     
     toData() {

@@ -17,7 +17,7 @@ const toPng = a =>a.toDataURL()
 const canvas = doc.getElementById('a');
 const ctx = getC(canvas);
 
-const dIso = (img, x, size, cx,cy,st = 0, time = 0, spin = 0) => {
+const dIso = (img, x, size, cx,cy,sy=.5,st = 0, time = 0, spin = 0) => {
     ctx.save();
     const offsetY = spin ? Math.sin(time) * 10 : 0;
     ctx.translate(cx + x, cy + offsetY);
@@ -31,7 +31,7 @@ const dIso = (img, x, size, cx,cy,st = 0, time = 0, spin = 0) => {
         ctx.ellipse(0, size * 0.4, size * 0.2 * shadowScale, size * 0.15 * shadowScale, 0, 0, PI * 2);
         ctx.fill();
     } else {
-        ctx.scale(1, 0.5);
+        ctx.scale(1, sy);
         ctx.rotate(PI / 4);
     }
 

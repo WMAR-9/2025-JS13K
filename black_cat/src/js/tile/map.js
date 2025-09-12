@@ -24,20 +24,18 @@ function revive(data) {
 
 class GameMap {
   constructor() {
-    this.finalending = 0
-    this.eachending = 0
-    
     // moving history
     this.index = -1;
   }
   
   changelevel(level){
     GameInit.restartLevel = 0
-
+    
     GameInit.level = level
 
     if(GameInit.level>GameInit.maxLevel){
-      this.finalending = 1
+      GameInit.level = 0
+      GameInit.state = 0
       return;
     }
     
@@ -46,16 +44,18 @@ class GameMap {
     GameInit.levelcleared = 0
 
   }
-  genMap(){
-    console.log(GameInit.item)
+  genMap(){    
     let currentMap = GameInit.mapLevel[GameInit.level]
+
     for (let obj in currentMap) {
       if (obj==0) {
+        let num = currentMap[3]
         GameInit.item = currentMap[obj].flatMap(
           (tiles, groupIndex) => tiles.map(
             ([k, h,n], idx) =>{
               // clone address
-              GameInit.tileTable[`${idx},${groupIndex}`]=new Tile(idx,groupIndex,h,k,n?n:0)
+              let v = n?n:num?num:0;
+              GameInit.tileTable[`${idx},${groupIndex}`]=new Tile(idx,groupIndex,h,k,v)
               return GameInit.tileTable[`${idx},${groupIndex}`]
             }
           )
@@ -80,7 +80,7 @@ class GameMap {
     }
 
     // start animation 
-    GameInit.transOn = new TransitionEffect(0,100)
+    GameInit.transOn = new TransitionEffect(0)
   }
 
   initMap(){
@@ -96,6 +96,7 @@ class GameMap {
     cats: GameInit.cats.map(c => c.toData())
     })
   }
+
   undo(){
 
     if (GameInit.prevMap.length > 0) {

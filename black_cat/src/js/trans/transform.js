@@ -6,7 +6,7 @@ import { Timer } from "../timer";
 const easeOutQuad = t => t * (2 - t);
 
 class TransitionEffect {
-  constructor(fadeIn = 0, duration = 3000) {
+  constructor(fadeIn = 0, duration = 150) {
     
     this.targets = GameInit.cats.map(obj => ({
       pos: obj.pos,
@@ -24,7 +24,7 @@ class TransitionEffect {
 
     ctx.save();
     // ctx.globalCompositeOperation = 'source-atop';
-    ctx.globalAlpha=this.fadeIn?.4:.7
+    ctx.globalAlpha=0.3
     let allDone = 1;
 
     this.targets.forEach(t => {
@@ -39,7 +39,8 @@ class TransitionEffect {
       }
 
       ctx.beginPath();
-
+      ctx.fillStyle='#000'
+      
       ctx.arc(
         t.pos.x,
         t.pos.y,
