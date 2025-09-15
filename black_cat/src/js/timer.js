@@ -1,14 +1,15 @@
 import { min } from "./basic";
 
 class Timer {
-    constructor(step = 1,loop=0) {
+    constructor(step = 1,l=0) {
         this.set(0,1,step)
-        this.loop = loop
+        this.l = l
+        this.e=0
     }
 
-    set(startTime, endTime, step) {
-        this.startTime = startTime;
-        this.endTime = endTime;
+    set(s, et, step) {
+        this.s = s;
+        this.et = et;
         this.step = step;
     }
     
@@ -17,35 +18,35 @@ class Timer {
     }
 
     add() {
-        this.startTime += this.step;
+        this.s += this.step;
     }
     
     sub() {
-        this.startTime -= this.step;
+        this.s -= this.step;
     }
 
     clone(){
-      return new Timer(this.step,this.loop)
+      return new Timer(this.step,this.l)
     }
     
     reset() {
-        this.startTime = 0;
+        this.s = 0;
+        this.e=0
     }
 
     start() {
-        if (this.startTime < this.endTime) {
-            this.add();
-            return 0
+        if (this.s < this.et) {
+            this.add()
         } else {
-            if(this.loop){
-                this.reset();
+            this.e=1
+            if(this.l){
+                this.reset()
             }
-            return 1
         }
     }
     // animate
     get progress() {
-        return min(this.startTime / this.endTime, 1);
+        return min(this.s / this.et, 1);
     }
 }
 
