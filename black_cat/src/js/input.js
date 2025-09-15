@@ -29,7 +29,7 @@ class Action {
   handle(e) {
     let k = e.which || 0, keytype = e.type;
     playChord()
-    console.log(k)    
+     
     if (e.repeat) return;
 
     const allIdle = GameInit.cats.every(c => !c.moving);
@@ -65,6 +65,8 @@ class Action {
           GameInit.state = 1;
         }
         if (t === 2) {
+          console.log(GameInit.g)   
+          if(GameInit.g)GameInit.g=0;
           GameInit.ti?GameInit.ti.isrun = 0:null;
           GameInit.state = 2;
           GameInit.map.changelevel(GameInit.level);
@@ -107,10 +109,6 @@ class Action {
       }
       if (k==69){ // e = Home
         GameInit.state=0
-      }
-
-      if (k==65){ // e = Home
-        play(5)
       }
     }
   }

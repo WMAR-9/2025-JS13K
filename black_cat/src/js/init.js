@@ -46,7 +46,6 @@ const GameInit ={
     "brave even in darkness\neach fall\n rise again\n:want to go home",
     "their voice calls you\nrun faster now\nTheir hand reaches out\nThey hold you tight##\nmeow",
     "the scent leads you on\ncrossed the cold puddle\nwent around the wall\ncloser to warmth home",
-    "cats only react to\n same color item\npay attention\nto the number of steps\nless than 14",
     "\nthank you for playing this game\n meow# meow# meow#",
     "\n\nhome\n at last::\nbut \nmore cats \nawait black cat help##"
   ],
@@ -66,6 +65,7 @@ const GameInit ={
     "##no hint for you##\n think twice", //14
     "magic change\nmeow# meow# meow#",//15
     "here have some bug\n wish u can find it",//16
+    "hihi### play with arrow key\nwelcome to the world of cats#\nthe clever black cat \nneeds to help the other cats\nreturn to their home\nyou must use your wisdom \nto lead all the cats back home\ncats only react to\n same color item\npay attention\nto the number of steps\nless than 13",
     "falling is cute\nrising is cooler##\n\nhere tips:\n"],
   cmsg:["MEOW","i am home","OOPS TOO HIGH","NO WAY","OTHER CATS","magic change","MEWWWOWW","yummy yummy","Mmm too dark","left "],
   // handle map /level up
@@ -254,6 +254,7 @@ const GameInit ={
   moves:{ 37: [-1, 0], 38: [0, -1], 39: [1, 0], 40: [0, 1] },
   mbtn:{ t:0,x: 0, y: 0, w: 0, h: 0 },
   btn:[],
+  g:0,
   ac:null
 }
 // 

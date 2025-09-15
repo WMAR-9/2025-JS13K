@@ -5,11 +5,11 @@ import { Action } from "./input";
 import { GameMap } from "./tile/map";
 import { TransitionEffect } from "./trans/transform";
 import { Vector } from "./vector";
-import blocks from '../img/zip.png';
+import blocks from '../img/t.png';
 import { allPng } from "./assest/createAsset";
 import { TypewriterSprite } from "./trans/typeing";
 import { minimap } from "./tile/littlemap";
-import { floor, localGet, localSet, max, min } from "./basic";
+import { floor, localGet, localSet, max, min, rand } from "./basic";
 import { Timer } from "./timer";
 import { Cat } from "./Cat";
 import { play } from "./audio/audio1";
@@ -40,22 +40,22 @@ const initGame =async ()=>{
     
 }
 
-async function showLoaderAndInit({ minTime = 5000, fadeTime = 1000 } = {}) {
+async function showLoaderAndInit({ minTime = 10000, fadeTime = 1000 } = {}) {
   const loading = document.getElementById("l");
   const bar = loading.querySelector(".p");
   const text = loading.querySelector(".t");
 
   loading.style.setProperty("--fade-time", fadeTime + "ms");
   loading.classList.remove("hidden");
-
+  
+  
   let progress = 0;
   const timer = setInterval(() => {
-    bar.style.width = (progress = Math.min(progress + Math.random() * 10, 100)) + "%";
-    text.textContent = Math.floor(progress) + "%";
+    bar.style.width = (progress = min(progress + rand(10), 100)) + "%";
+    text.textContent = floor(progress) + "%";
     if (progress >= 100) clearInterval(timer);
   }, 200);
   await Promise.all([initGame(), new Promise(r => setTimeout(r, minTime))]);
-  
   clearInterval(timer);
   bar.style.width = "100%";
   text.textContent = "100%";
@@ -202,6 +202,12 @@ const drawHome = _ => {
 };
 
 const drawGame=()=>{
+
+    if(GameInit.g){
+      GameInit.g.update()
+      return;
+    }
+
     minimap()
     if(GameInit.restartLevel)GameInit.map.changelevel(GameInit.level);
 
@@ -362,6 +368,7 @@ onresize=()=>{
 addEventListener("DOMContentLoaded", async () => {
   await showLoaderAndInit({ minTime: 5000, fadeTime: 1500 });
   cat = new Cat(0,0,1,1)
+  GameInit.g = new TypewriterSprite(0,{f:3,d:1})
   console.log("finish..init")
 
 });

@@ -15,7 +15,7 @@ class TypewriterSprite{
     this.nm = t+2
     this.set(t?
       msg[randInt(4)-1]+msg[msg.length-(GameInit.level>=GameInit.maxLevel?2:1)]:
-      ltip[ltip.length-1]+GameInit.ltip[GameInit.level]
+      o.d?ltip[ltip.length-2]:(ltip[ltip.length-1]+GameInit.ltip[GameInit.level])
     )
   }
   set(t){
